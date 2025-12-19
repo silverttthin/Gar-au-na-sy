@@ -26,7 +26,7 @@ void Init(void);
 void RccInit(void);
 void GpioInit(void);
 void TimerInit(void);
-void Delay_us(uint16_t us); // 16비트 타이머 한계로 uint16_t 권장
+void Delay_us(uint16_t us);
 void Delay_ms(uint32_t ms); // 긴 딜레이를 위한 밀리초 함수 추가
 
 // 색상 배열 (필요시 사용)
