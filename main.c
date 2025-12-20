@@ -378,13 +378,8 @@ uint16_t Get_Adc_Value(void)
 }
 
 void setServoPulse(uint16_t pulse)
-{
-    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_Pulse = pulse;
-
-    TIM_OC3Init(TIM3, &TIM_OCInitStructure);
+{  
+    TIM_SetCompare3(TIM3, pulse);
 }
 
 /* Ultrasonic */
