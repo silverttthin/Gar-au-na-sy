@@ -42,3 +42,4 @@
 *.dwo
 .cursor
 Documents/
+package-lock.json
