@@ -13,7 +13,7 @@
  * - PB0: 서보모터 PWM (TIM3 CH3)
  * - PB10/PB11: 초음파 Trig/Echo
  * - PC6/PC7: 오른쪽 모터 (motor.c 기준)
- * - PC8/PC9: 왼쪽 모터 (motor.c 기준)
+ * - PC5/PC9: 왼쪽 모터 (motor.c 기준)
  * - PC10/PC11: UART4 TX/RX (음성인식 모듈)
  * - PD5/PD6: USART2 TX/RX (블루투스, 리맵)
  */
@@ -67,10 +67,10 @@
 
 /* =========================================================
    모터 제어 핀 정의 (motor.c 기준)
-   - 왼쪽 모터: PC8(+), PC9(-)
+   - 왼쪽 모터: PC5(+), PC9(-)
    - 오른쪽 모터: PC6(+), PC7(-)
    ========================================================= */
-#define MOTOR_LEFT_FWD       GPIO_Pin_8      /* PC8 */
+#define MOTOR_LEFT_FWD       GPIO_Pin_5      /* PC5 */
 #define MOTOR_LEFT_BWD       GPIO_Pin_9      /* PC9 */
 #define MOTOR_RIGHT_FWD      GPIO_Pin_6      /* PC6 */
 #define MOTOR_RIGHT_BWD      GPIO_Pin_7      /* PC7 */
@@ -291,7 +291,7 @@ void USART2_IRQHandler(void)
                 GPIO_SetBits(GPIOC, MOTOR_RIGHT_BWD);
                 break;
                 
-            case 'L': case 'l':  /* 좌회전 */
+            case 'R': case 'r':  /* 좌회전 */
                 /* 왼쪽 모터: 역회전 */
                 GPIO_ResetBits(GPIOC, MOTOR_LEFT_FWD);
                 GPIO_SetBits(GPIOC, MOTOR_LEFT_BWD);
@@ -300,7 +300,7 @@ void USART2_IRQHandler(void)
                 GPIO_ResetBits(GPIOC, MOTOR_RIGHT_BWD);
                 break;
                 
-            case 'R': case 'r':  /* 우회전 */
+            case 'L': case 'l':  /* 우회전 */
                 /* 왼쪽 모터: 정회전 */
                 GPIO_SetBits(GPIOC, MOTOR_LEFT_FWD);
                 GPIO_ResetBits(GPIOC, MOTOR_LEFT_BWD);
@@ -537,14 +537,6 @@ void GpioInit(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
 
-    /* =========================================================
-       [중요] TIM3 Full Remap 해제
-       - Full Remap 상태에서는 TIM3_CH3가 PC8에 출력됨
-       - 이러면 서보 PWM이 모터 핀에 영향을 줌
-       - 반드시 No Remap 상태로 유지해야 TIM3_CH3가 PB0에서만 동작
-       ========================================================= */
-    GPIO_PinRemapConfig(GPIO_FullRemap_TIM3, DISABLE);
-
     /* IR 센서 (PA1) - Analog Input */
     GPIO_InitStructure.GPIO_Pin = IR_SENSOR_PIN;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
@@ -609,16 +601,12 @@ void GpioInit(void)
     /* =========================================================
        모터 제어 핀 설정 (motor.c 기준)
        - PC6/7: 오른쪽 모터
-       - PC8/9: 왼쪽 모터
-       [수정] 핀 설정 직후 즉시 LOW로 초기화하여 모터 정지 보장
+       - PC5/9: 왼쪽 모터
        ========================================================= */
     GPIO_InitStructure.GPIO_Pin = MOTOR_ALL_PINS;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
-    
-    /* 모터 핀 즉시 LOW로 설정 (초기화 직후 모터 정지 보장) */
-    GPIO_ResetBits(GPIOC, MOTOR_ALL_PINS);
 }
 
 /* =========================================================
