@@ -647,10 +647,10 @@ int main(void)
     TimerInit();           // TIM2 1us
     TIM3_Configure_ForServo();
 
-    // LCD/Touch 초기화. lcd는 입력용도로만 사용
+    // LCD/Touch 초기화 (기존 버전 유지)
     LCD_Init();
-    // Touch_Configuration();
-    // Touch_Adjust();
+    Touch_Configuration();
+    Touch_Adjust();
 
     // 초기 UI
     LCD_Clear(WHITE);
@@ -743,7 +743,4 @@ int main(void)
             continue;
         }
     }
-
-    // 임베디드 환경에서는 도달하지 않지만, 표준 C 규격을 위해 반환값을 둡니다.
-    return 0;
 }
